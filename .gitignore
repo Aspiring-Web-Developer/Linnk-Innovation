@@ -1,4 +1,4 @@
-   node_modules/
-   dist/
-   scratch/
-   .env
+node_modules/
+dist/
+scratch/
+.env
