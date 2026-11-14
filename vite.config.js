@@ -10,4 +10,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    host: true,   // listen on 0.0.0.0 so other devices can reach it
+    port: 5173,
+  },
 });

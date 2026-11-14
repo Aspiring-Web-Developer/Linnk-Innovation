@@ -22,18 +22,22 @@ export default function SmoothScroll({ children }) {
 
     lenisRef.current = lenis;
 
+    // Expose globally so ScrollToTop (and anything else) can call lenis.scrollTo()
+    window.lenis = lenis;
+
     // Sync Lenis scroll with GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    const tick = (time) => {
       lenis.raf(time * 1000);
-    });
-
+    };
+    gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      gsap.ticker.remove(tick);
       lenis.destroy();
-      gsap.ticker.remove((time) => lenis.raf(time * 1000));
+      if (window.lenis === lenis) delete window.lenis;
     };
   }, []);
 

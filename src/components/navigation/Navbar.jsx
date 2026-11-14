@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { ChevronDown, PhoneCall, Menu } from 'lucide-react';
 import MobileMenu from './MobileMenu';
+import ContactModal from '@/components/common/ContactModal';
 import { cn } from '@/utils/cn';
 
 const NAV_LINKS = [
@@ -8,12 +10,12 @@ const NAV_LINKS = [
     name: 'SERVICES',
     href: '/services/',
     subItems: [
-      { name: 'Managed Quality Assurance', href: '/services/managed-qa-services/' },
-      { name: 'Managed AI & Workflow Automation', href: '/services/ai-managed-services/' },
-      { name: 'Managed Application Engineering', href: '/services/application-engineering/' },
-      { name: 'Managed Cloud & DevSecOps', href: '/services/cloud-devsecops/' },
-      { name: 'Managed Software Development', href: '/services/software-development/' },
-      { name: 'Managed Data & Analytics', href: '/services/data-analytics/' },
+      { name: 'Managed Quality Assurance', href: '/services/managed-qa-services' },
+      { name: 'Managed AI & Workflow Automation', href: '/services/ai-managed-services' },
+      { name: 'Managed Application Engineering', href: '/services/application-engineering' },
+      { name: 'Managed Cloud & DevSecOps', href: '/services/cloud-devsecops' },
+      { name: 'Managed Software Development', href: '/services/software-development' },
+      { name: 'Managed Data & Analytics', href: '/services/data-analytics' },
     ],
   },
   { name: 'WORK', href: '/case-studies/' },
@@ -29,33 +31,31 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
 
+  // Lets any button on the site open the modal:
+  // onClick={() => window.dispatchEvent(new Event('open-contact-modal'))}
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const open = () => setIsContactOpen(true);
+    window.addEventListener('open-contact-modal', open);
+    return () => window.removeEventListener('open-contact-modal', open);
   }, []);
 
   return (
     <>
-      <header
-        className={cn(
-          'sticky top-0 z-50 w-full bg-white transition-shadow duration-300 border-b border-black/5',
-          isScrolled ? 'shadow-sm' : ''
-        )}
-      >
-        <div className="w-full pl-6 pr-6 sm:pl-8 sm:pr-8 lg:pl-10 lg:pr-20 xl:pl-10 xl:pr-40 h-20 sm:h-24 lg:h-[115px] flex items-center justify-between">
+      {/* Not sticky: scrolls away with the page */}
+      <header className="relative z-50 w-full bg-white border-b border-black/5">
+        <div className="w-full pl-6 pr-6 sm:pl-8 sm:pr-8 lg:pl-10 lg:pr-20 xl:pl-10 xl:pr-40 h-16 sm:h-20 lg:h-[100px] flex items-center justify-between">
           {/* Logo */}
-          <a href="/" className="flex items-center shrink-0">
+          <Link to="/" className="flex items-center shrink-0">
             <img
               src="/logo.png"
               alt="Linnk Innovation Hub"
               className="h-12 sm:h-16 lg:h-[88px] w-auto object-contain"
             />
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-14 xl:gap-28 lg:ml-auto lg:mr-16 xl:mr-36">
@@ -125,15 +125,16 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Partner button */}
+          {/* Partner button: opens the contact modal */}
           <div className="hidden lg:flex items-center shrink-0">
-            <a
-              href="/contact-us/"
+            <button
+              type="button"
+              onClick={() => setIsContactOpen(true)}
               className="inline-flex items-center gap-2 px-7 py-1 rounded-full border border-black text-black text-[13px] xl:text-[14px] font-light hover:bg-brand-mint transition-colors duration-300"
             >
               <PhoneCall className="w-4 h-8 stroke-[1.5]" />
               <span>Partner with us</span>
-            </a>
+            </button>
           </div>
 
           {/* Mobile Menu Trigger */}
@@ -151,7 +152,13 @@ export default function Navbar() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         navLinks={NAV_LINKS}
+        onPartnerClick={() => {
+          setIsMobileMenuOpen(false);
+          setIsContactOpen(true);
+        }}
       />
+
+      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </>
   );
 }

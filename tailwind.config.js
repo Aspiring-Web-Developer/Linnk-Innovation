@@ -33,7 +33,7 @@ export default {
         }
       },
       fontFamily: {
-        heading: ['"Inter Tight"', 'sans-serif'],
+        heading: ['Outfit', 'sans-serif'],
         serif: ['"Instrument Serif"', 'Georgia', 'serif'],
         body: ['"Poppins"', 'sans-serif'],
         meta: ['"Inter"', 'sans-serif'],

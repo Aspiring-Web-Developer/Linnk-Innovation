@@ -53,3 +53,9 @@
     background: #00b894;
   }
 }
+
+
+html,
+body {
+  overflow-x: clip; /* was: hidden */
+}
